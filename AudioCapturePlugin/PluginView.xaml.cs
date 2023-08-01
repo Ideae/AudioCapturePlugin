@@ -32,7 +32,17 @@ namespace AudioCapturePlugin
 			SaveFileDialog dlg = new SaveFileDialog();
 			if (dlg.ShowDialog() == true)
 			{
+				int fileDurationSeconds = 0;
+				if (!int.TryParse(Duration_TextBox.Text, out fileDurationSeconds))
+				{
+					// todo: make popup box to report error
+					Debug.WriteLine("ZZZ: Error: The duration textbox did not contain a valid integer value.");
+					return;
+				}
 				Debug.WriteLine("ZZZ: Filename: " + dlg.FileName + "   File Duration: " + Duration_TextBox.Text);
+				//string directory = "";
+				//string path = directory + "/" + dlg.FileName; // todo: check if the middle slash is necessary
+				AudioCapturePlugin.WriteAudioFile(dlg.FileName, fileDurationSeconds);
 			}
 		}
     }

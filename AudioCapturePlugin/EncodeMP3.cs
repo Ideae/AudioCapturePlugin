@@ -10,35 +10,36 @@
 /*---------------------- BeatUp (C) 2016-------------------- */
 
 
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System;
 using NAudio.Wave;
 using NAudio.Lame;
+using System.Diagnostics;
 
 public static class EncodeMP3
 {
 
 
-	public static void convert (AudioClip clip, string path, int bitRate)
+	public static void convert (float[] samples, string path, int bitRate)
 	{
 
 		if (!path.EndsWith (".mp3"))
 			path = path + ".mp3";
 		
-		ConvertAndWrite (clip, path, bitRate);
+		ConvertAndWrite (samples, path, bitRate);
 
 	}
 
 
 	//  derived from Gregorio Zanon's script
-	private static void ConvertAndWrite (AudioClip clip, string path, int bitRate)
+	//private static void ConvertAndWrite (AudioClip clip, string path, int bitRate)
+	private static void ConvertAndWrite(float[] samples, string path, int bitRate)
 	{
-		var samples = new float[clip.samples * clip.channels];
+		//var samples = new float[clip.samples * clip.channels];
 
-		clip.GetData (samples, 0);
+		//clip.GetData (samples, 0);
 
 		Int16[] intData = new Int16[samples.Length];
 		//converting in 2 float[] steps to Int16[], //then Int16[] to Byte[]
@@ -60,29 +61,27 @@ public static class EncodeMP3
 	}
 
 	//added
-	public static void WriteMP3(string path, byte[] wavFile, int bitRate)
+	public static void WriteMP3(string path, byte[] wavFile, int bitDepth) //bitRate)
 	{
-		File.WriteAllBytes(path, ConvertWavToMp3(wavFile, bitRate));
-
-		Debug.Log("Finished saving to MP3 file at: " + path + ".");
+		Debug.WriteLine("Attempting to encode mp3 file: " + path);
+		var bytesMP3 = ConvertWavToMp3(wavFile, bitDepth);
+		Debug.WriteLine("Attempting to write all file bytes...");
+		File.WriteAllBytes(path, bytesMP3);
+		Debug.WriteLine("Finished saving to MP3 file at: " + path + ".");
 	}
 
-	private static byte[] ConvertWavToMp3 (byte[] wavFile, int bitRate)
+	private static byte[] ConvertWavToMp3 (byte[] wavFile, int bitDepth) //bitRate)
 	{
-
 		var retMs = new MemoryStream ();
 		var ms = new MemoryStream (wavFile);
-		var rdr = new RawSourceWaveStream (ms, new WaveFormat (48000, bitRate, 2));
-		var wtr = new LameMP3FileWriter (retMs, rdr.WaveFormat, bitRate);
+		var rdr = new RawSourceWaveStream (ms, new WaveFormat (48000, bitDepth, 2));
+		var wtr = new LameMP3FileWriter (retMs, rdr.WaveFormat, bitDepth);
 		
 		rdr.CopyTo (wtr);
 
 		wtr.Flush();
 
 		return retMs.ToArray ();
-
-
-
 	}
 	
 	

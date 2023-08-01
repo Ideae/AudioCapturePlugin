@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
 using System.IO;
+using System.Diagnostics;
 
-public class AudioRenderer : MonoBehaviour
+public class AudioRenderer
 {
     public bool WriteMP3 = true;
 
@@ -52,11 +52,11 @@ public class AudioRenderer : MonoBehaviour
     }
 
 
-	private void Update()
+	/*private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.Insert))
 		{
-            //Debug.Log(Application.persistentDataPath);
+            //Debug.WriteLine(Application.persistentDataPath);
             if (!Rendering)
 			{
                 StartRecording();
@@ -66,19 +66,19 @@ public class AudioRenderer : MonoBehaviour
                 FinishRecording();
             }
 		}
-	}
+	}*/
 
     public void StartRecording()
 	{
-        Debug.Log("Starting to record...");
+        Debug.WriteLine("Starting to record...");
         this.Clear();
         Rendering = true;
 	}
 
-    private void FinishRecording()
+    /*private void FinishRecording()
 	{
         //todo: open 'save file dialog', with the default filename generated below
-        Debug.Log("Finished recording, attempting to save file...");
+        Debug.WriteLine("Finished recording, attempting to save file...");
         Rendering = false;
 
         int attempts = 500;
@@ -102,9 +102,8 @@ public class AudioRenderer : MonoBehaviour
                 return;
             }
         }
-        Debug.Log("Error: Could not write audio file because it took too many attempts to find a unique filename.");
-        
-    }
+        Debug.WriteLine("Error: Could not write audio file because it took too many attempts to find a unique filename.");
+    }*/
 
 	// reset the renderer
 	public void Clear()
@@ -146,10 +145,11 @@ public class AudioRenderer : MonoBehaviour
 		}
 		else
 		{
-            Debug.LogWarning("There is no audio data to save!");
+            Debug.WriteLine("There is no audio data to save!");
         }
 	}
 
+    
     #region File I/O
     public AudioRenderer.Result Save(string filename)
     {
@@ -165,7 +165,7 @@ public class AudioRenderer : MonoBehaviour
             {
                 // Save to a file. Print a warning if overwriting a file.
                 if (File.Exists(filename))
-                    Debug.LogWarning("Overwriting " + filename + "...");
+                    Debug.WriteLine("Overwriting " + filename + "...");
 
                 // reset the stream pointer to the beginning of the stream
                 outputStream.Position = 0;
@@ -178,14 +178,14 @@ public class AudioRenderer : MonoBehaviour
                 fs.Close();
 
                 // for debugging only
-                Debug.Log("Finished saving to WAV file at: " + filename + ".");
+                Debug.WriteLine("Finished saving to WAV file at: " + filename + ".");
             }
 
             result.State = Status.SUCCESS;
         }
         else
         {
-            Debug.LogWarning("There is no audio data to save!");
+            Debug.WriteLine("There is no audio data to save!");
 
             result.State = Status.FAIL;
             result.Message = "There is no audio data to save!";
@@ -250,4 +250,6 @@ public class AudioRenderer : MonoBehaviour
         this.outputStream = newOutputStream;
     }
     #endregion
+
+    
 }
