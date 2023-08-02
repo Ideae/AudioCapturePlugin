@@ -15,7 +15,8 @@ namespace AudioCapturePlugin
 		AudioIOPort stereoInput;
 		AudioIOPort stereoOutput;
 
-		public static double[] samplesBuffer = null;
+		public static double[] samplesBufferLeft = null;
+		public static double[] samplesBufferRight = null;
 		private int _bufferSizeInSeconds = 120;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
 		private int _currentBufferIndex = 0;
@@ -48,7 +49,8 @@ namespace AudioCapturePlugin
 			// int sampRate = (int)Host.SampleRate; //todo: find out why host isn't initialized here or how to get around this (and why isn't Initialize being called before Process?)
 			int sampRate = 44100; //todo: this should be based on the Host
 			int bufferSizeInSamples = sampRate * _bufferSizeInSeconds;
-			samplesBuffer = new double[bufferSizeInSamples]; // Big Buffer.
+			samplesBufferLeft = new double[bufferSizeInSamples]; // Big Buffer.
+			samplesBufferRight = new double[bufferSizeInSamples]; // Big Buffer.
 		}
 
 		public override UserControl GetEditorView()
@@ -90,9 +92,9 @@ namespace AudioCapturePlugin
 
 					// This saves the audio to the Big Buffer for writing to file later.
 					// todo: only saving left channel now, find out if interleaving is necessary for two channels
-					samplesBuffer[_currentBufferIndex++] = outLeftSamples[i];
-					//samplesBuffer[_currentBufferIndex++] = outRightSamples[i];
-					if (_currentBufferIndex >= samplesBuffer.Length)
+					samplesBufferLeft[_currentBufferIndex++] = outLeftSamples[i];
+					samplesBufferRight[_currentBufferIndex++] = outRightSamples[i];
+					if (_currentBufferIndex >= samplesBufferLeft.Length)
 					{
 						_currentBufferIndex = 0;
 					}
@@ -101,7 +103,7 @@ namespace AudioCapturePlugin
 			}
 			while (nextSample < inSamplesLeft.Length); // Continue looping until we hit the end of the buffer
 		}
-		public static void WriteAudioFile(string path, int durationInSeconds)
+		public static bool WriteAudioFile(string path, int durationInSeconds)
 		{
 			int durationSecs = durationInSeconds;
 			if (durationSecs > Instance.bufferSizeInSeconds)
@@ -110,20 +112,44 @@ namespace AudioCapturePlugin
 				durationSecs = Instance.bufferSizeInSeconds;
 			}
 			int totalSamples = sampleRate * durationSecs;
-			double[] samples = new double[totalSamples];
+			
 
-			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBuffer.Length);
+			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBufferLeft.Length);
 
-			int samplesBufferLength = samplesBuffer.Length;
-
-			for (int i = 0; i < samples.Length; i++)
+			int samplesBufferLength = samplesBufferLeft.Length;
+			double[] samples = null;
+			if (channels == 1)
 			{
-				int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
-				double samp = samplesBuffer[sampleIndex];
-				samples[i] = samp;
+				samples = new double[totalSamples];
+				for (int i = 0; i < samples.Length; i++)
+				{
+					int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
+					double samp = samplesBufferLeft[sampleIndex];
+					samples[i] = samp;
+				}
 			}
-			AudioWriter.WriteWAV(path, samples, sampleRate);
+			else if (channels == 2)
+			{
+				// Interleave the left and right samples
+				samples = new double[totalSamples * 2];
+				for (int i = 0; i < totalSamples; i++)
+				{
+					int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
+					double sampLeft = samplesBufferLeft[sampleIndex];
+					samples[i * 2] = sampLeft;
+					double sampRight = samplesBufferRight[sampleIndex];
+					samples[i * 2 + 1] = sampRight;
+				}
+			}
+			else
+			{
+				Debug.WriteLine("Error: Channel counts other than 1 or 2 are unsupported, but channels = " + channels);
+				return false;
+			}
+			
+			AudioWriter.WriteWAV(path, samples, sampleRate, channels);
 			//AudioWriter.WriteMP3(path, samples); //todo: get this working
+			return true;
 		}
 		public static int nfmod(int a, int b)
 		{

@@ -29,7 +29,7 @@ namespace AudioCapturePlugin
 			EncodeMP3.WriteMP3(filename, outputStream.ToArray(), BITS_PER_SAMPLE);
 		}
 
-		public static void WriteWAV(string filename, double[] samples, int sampleRate) //, int bitsPerSample)
+		public static void WriteWAV(string filename, double[] samples, int sampleRate, int channels) //, int bitsPerSample)
 		{
 			MemoryStream outputStream = new MemoryStream();
 			BinaryWriter outputWriter = new BinaryWriter(outputStream);
@@ -49,7 +49,6 @@ namespace AudioCapturePlugin
 
 			int HEADER_SIZE = 44;
 			short BITS_PER_SAMPLE = 16;
-			int channels = 1;
 			AddHeader(fs, samples.Length, BITS_PER_SAMPLE, channels, HEADER_SIZE, sampleRate);
 
 			outputStream.WriteTo(fs);

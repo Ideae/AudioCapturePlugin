@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:AudioCapturePlugin"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+  <Grid>
     <DockPanel LastChildFill="False" Background="#FFABABAB">
       <StackPanel>
         <TextBox Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="100" Height="21"/>
