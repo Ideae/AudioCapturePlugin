@@ -15,48 +15,13 @@ namespace AudioCapturePlugin
 		AudioIOPort stereoInput;
 		AudioIOPort stereoOutput;
 
-		/*AudioPluginParameter gainParameter = null;
-		AudioPluginParameter panParameter = null;*/
-
 		public static double[] samplesBuffer = null;
 		private int _bufferSizeInSeconds = 120;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
-		//private int bufferSizeInSamples = 0;
 		private int _currentBufferIndex = 0;
 
 		public static int sampleRate { get { return (int)Instance.Host.SampleRate; } }
-
-		public static void WriteAudioFile(string path, int durationInSeconds)
-		{
-			//Debug.WriteLine("ZZZ: WriteAudioFile 1");
-
-			int durationSecs = durationInSeconds;
-			if (durationSecs > Instance.bufferSizeInSeconds)
-			{
-				Debug.WriteLine("Warning: The maximum file length is " + Instance.bufferSizeInSeconds + ". Writing that length instead.");
-				durationSecs = Instance.bufferSizeInSeconds;
-			}
-			int totalSamples = sampleRate * durationSecs;
-			double[] samples = new double[totalSamples];
-
-			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBuffer.Length); //todo: make sure this works with negative values
-			//Debug.WriteLine("ZZZ: WriteAudioFile 2");
-
-			int samplesBufferLength = samplesBuffer.Length;
-
-			for (int i = 0; i < samples.Length; i++)
-			{
-				//Debug.WriteLine("ZZZ: WriteAudioFile Loop1. i = " + i);
-				int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
-				//Debug.WriteLine("ZZZ: WriteAudioFile Loop2. i = " + i + " firstSampleIndexInBuffer = " + firstSampleIndexInBuffer + " sampleIndex = " + sampleIndex);
-				double samp = samplesBuffer[sampleIndex];
-				//Debug.WriteLine("ZZZ: WriteAudioFile Loop3. i = " + i);
-				samples[i] = samp;
-			}
-			//Debug.WriteLine("ZZZ: WriteAudioFile 3");
-			AudioWriter.WriteWAV(path, samples, sampleRate);
-			//AudioWriter.WriteMP3(path, samples);
-		}
+		private const int channels = 2;
 
 		public AudioCapturePlugin()
 		{
@@ -99,28 +64,6 @@ namespace AudioCapturePlugin
 
 			InputPorts = new AudioIOPort[] { stereoInput = new AudioIOPort("Stereo Input", EAudioChannelConfiguration.Stereo) };
 			OutputPorts = new AudioIOPort[] { stereoOutput = new AudioIOPort("Stereo Output", EAudioChannelConfiguration.Stereo) };
-
-			/*AddParameter(gainParameter = new AudioPluginParameter
-			{
-				ID = "gain",
-				Name = "Gain",
-				Type = EAudioPluginParameterType.Float,
-				MinValue = -20,
-				MaxValue = 20,
-				DefaultValue = 0,
-				ValueFormat = "{0:0.0}dB"
-			});
-
-			AddParameter(panParameter = new AudioPluginParameter
-			{
-				ID = "pan",
-				Name = "Pan",
-				Type = EAudioPluginParameterType.Float,
-				MinValue = -1,
-				MaxValue = 1,
-				DefaultValue = 0,
-				ValueFormat = "{0:0.0}"
-			});*/
 		}
 
 		public override void Process()
@@ -136,29 +79,12 @@ namespace AudioCapturePlugin
 			int currentSample = 0;
 			int nextSample = 0;
 
-			/*double linearGain = Math.Pow(10.0, 0.05 * gainParameter.ProcessValue);
-			double pan = panParameter.ProcessValue;*/
-
 			do
 			{
 				nextSample = Host.ProcessEvents();  // Handle sample-accurate parameters - see the SimpleExample plugin for a simpler, per-buffer parameter approach
 
-				/*bool needGainUpdate = gainParameter.NeedInterpolationUpdate;
-				bool needPanUpdate = panParameter.NeedInterpolationUpdate;*/
-
 				for (int i = currentSample; i < nextSample; i++)
 				{
-					/*if (needGainUpdate)
-					{
-						linearGain = Math.Pow(10.0, 0.05 * gainParameter.GetInterpolatedProcessValue(i));
-					}
-					if (needPanUpdate)
-					{
-						pan = panParameter.GetInterpolatedProcessValue(i);
-					}
-					outLeftSamples[i] = inSamplesLeft[i] * linearGain * (1 - pan);
-					outRightSamples[i] = inSamplesRight[i] * linearGain * (1 + pan);*/
-
 					outLeftSamples[i] = inSamplesLeft[i];
 					outRightSamples[i] = inSamplesRight[i];
 
@@ -174,6 +100,30 @@ namespace AudioCapturePlugin
 				currentSample = nextSample;
 			}
 			while (nextSample < inSamplesLeft.Length); // Continue looping until we hit the end of the buffer
+		}
+		public static void WriteAudioFile(string path, int durationInSeconds)
+		{
+			int durationSecs = durationInSeconds;
+			if (durationSecs > Instance.bufferSizeInSeconds)
+			{
+				Debug.WriteLine("Warning: The maximum file length is " + Instance.bufferSizeInSeconds + ". Writing that length instead.");
+				durationSecs = Instance.bufferSizeInSeconds;
+			}
+			int totalSamples = sampleRate * durationSecs;
+			double[] samples = new double[totalSamples];
+
+			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBuffer.Length);
+
+			int samplesBufferLength = samplesBuffer.Length;
+
+			for (int i = 0; i < samples.Length; i++)
+			{
+				int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
+				double samp = samplesBuffer[sampleIndex];
+				samples[i] = samp;
+			}
+			AudioWriter.WriteWAV(path, samples, sampleRate);
+			//AudioWriter.WriteMP3(path, samples); //todo: get this working
 		}
 		public static int nfmod(int a, int b)
 		{

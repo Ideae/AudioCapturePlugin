@@ -31,13 +31,8 @@ namespace AudioCapturePlugin
 
 		public static void WriteWAV(string filename, double[] samples, int sampleRate) //, int bitsPerSample)
 		{
-			//Debug.WriteLine("ZZZ: WriteWAV 1");
-
 			MemoryStream outputStream = new MemoryStream();
 			BinaryWriter outputWriter = new BinaryWriter(outputStream);
-
-			//Debug.WriteLine("ZZZ: WriteWAV 2");
-
 
 			// Convert numeric audio data to bytes
 			for (int i = 0; i < samples.Length; i++)
@@ -48,9 +43,7 @@ namespace AudioCapturePlugin
 			//int BITS_PER_SAMPLE = 16;
 
 			string fullPath = filename + ".wav";
-			Debug.WriteLine("Attempting to write wav file: " + fullPath);
-
-			//File.WriteAllBytes(fullPath, outputStream.ToArray());
+			//Debug.WriteLine("Attempting to write wav file: " + fullPath);
 
 			FileStream fs = File.OpenWrite(fullPath);
 
@@ -74,9 +67,6 @@ namespace AudioCapturePlugin
 		/// http://www.lightlink.com/tjweber/StripWav/Canon.html
 		private static void AddHeader(FileStream fs, long numberOfSamples, short BITS_PER_SAMPLE, int channels, int HEADER_SIZE, int SAMPLE_RATE)
 		{
-			// reset the output stream
-			//outputStream.Position = 0;
-
 			// calculate the number of samples in the data chunk
 			//long numberOfSamples = outputStream.Length / (BITS_PER_SAMPLE / 8);
 
@@ -113,11 +103,6 @@ namespace AudioCapturePlugin
 
 			// write the number of bytes in the data portion
 			writer.Write((int)(numberOfSamples * BITS_PER_SAMPLE * channels / 8));
-
-			// copy over the actual audio data
-			//this.outputStream.WriteTo(newOutputStream);
-			// move the reference to the new stream
-			//this.outputStream = newOutputStream;
 
 			newOutputStream.WriteTo(fs);
 		}
