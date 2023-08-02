@@ -31,8 +31,13 @@ namespace AudioCapturePlugin
 
 		public static void WriteWAV(string filename, double[] samples, int sampleRate) //, int bitsPerSample)
 		{
+			//Debug.WriteLine("ZZZ: WriteWAV 1");
+
 			MemoryStream outputStream = new MemoryStream();
 			BinaryWriter outputWriter = new BinaryWriter(outputStream);
+
+			//Debug.WriteLine("ZZZ: WriteWAV 2");
+
 
 			// Convert numeric audio data to bytes
 			for (int i = 0; i < samples.Length; i++)

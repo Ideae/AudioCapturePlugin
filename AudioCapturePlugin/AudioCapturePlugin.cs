@@ -19,7 +19,7 @@ namespace AudioCapturePlugin
 		AudioPluginParameter panParameter = null;*/
 
 		public static double[] samplesBuffer = null;
-		private int _bufferSizeInSeconds = 10;
+		private int _bufferSizeInSeconds = 120;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
 		//private int bufferSizeInSamples = 0;
 		private int _currentBufferIndex = 0;
@@ -28,6 +28,8 @@ namespace AudioCapturePlugin
 
 		public static void WriteAudioFile(string path, int durationInSeconds)
 		{
+			//Debug.WriteLine("ZZZ: WriteAudioFile 1");
+
 			int durationSecs = durationInSeconds;
 			if (durationSecs > Instance.bufferSizeInSeconds)
 			{
@@ -37,15 +39,21 @@ namespace AudioCapturePlugin
 			int totalSamples = sampleRate * durationSecs;
 			double[] samples = new double[totalSamples];
 
-			int firstSampleIndexInBuffer = (Instance._currentBufferIndex - totalSamples) % samplesBuffer.Length; //todo: make sure this works with negative values
+			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBuffer.Length); //todo: make sure this works with negative values
+			//Debug.WriteLine("ZZZ: WriteAudioFile 2");
+
+			int samplesBufferLength = samplesBuffer.Length;
 
 			for (int i = 0; i < samples.Length; i++)
 			{
-				int sampleIndex = (firstSampleIndexInBuffer + i) % samplesBuffer.Length;
+				//Debug.WriteLine("ZZZ: WriteAudioFile Loop1. i = " + i);
+				int sampleIndex = nfmod((firstSampleIndexInBuffer + i), samplesBufferLength);
+				//Debug.WriteLine("ZZZ: WriteAudioFile Loop2. i = " + i + " firstSampleIndexInBuffer = " + firstSampleIndexInBuffer + " sampleIndex = " + sampleIndex);
 				double samp = samplesBuffer[sampleIndex];
+				//Debug.WriteLine("ZZZ: WriteAudioFile Loop3. i = " + i);
 				samples[i] = samp;
 			}
-
+			//Debug.WriteLine("ZZZ: WriteAudioFile 3");
 			AudioWriter.WriteWAV(path, samples, sampleRate);
 			//AudioWriter.WriteMP3(path, samples);
 		}
@@ -166,6 +174,10 @@ namespace AudioCapturePlugin
 				currentSample = nextSample;
 			}
 			while (nextSample < inSamplesLeft.Length); // Continue looping until we hit the end of the buffer
+		}
+		public static int nfmod(int a, int b)
+		{
+			return a - b * (int)Math.Floor((double)a / b);
 		}
 	}
 }
