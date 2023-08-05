@@ -10,12 +10,17 @@
     <DockPanel LastChildFill="False" Background="#FFABABAB">
       <StackPanel>
         <TextBox Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="100" Height="21"/>
+        <ComboBox x:Name="TimeUnits_ComboBox" Width="100" SelectedIndex="0">
+          <ComboBoxItem Content="Minutes"/>
+          <ComboBoxItem Content="Seconds"/>
+        </ComboBox>
         <Button Content="Save File" Click="SaveFile_Button_Click"/>
       </StackPanel>
-    
-      
+
+
+
     </DockPanel>
-    
+
 
 
   </Grid>

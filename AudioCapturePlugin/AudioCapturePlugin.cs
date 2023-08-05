@@ -17,7 +17,7 @@ namespace AudioCapturePlugin
 
 		public static double[] samplesBufferLeft = null;
 		public static double[] samplesBufferRight = null;
-		private int _bufferSizeInSeconds = 120;
+		private int _bufferSizeInSeconds = 125;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
 		private int _currentBufferIndex = 0;
 

@@ -36,20 +36,31 @@ namespace AudioCapturePlugin
 
 		private void SaveFile_Button_Click(object sender, RoutedEventArgs e)
 		{
-			int fileDurationSeconds = 0;
-			if (!int.TryParse(Duration_TextBox.Text, out fileDurationSeconds))
+			int fileDuration = 0;
+			if (!int.TryParse(Duration_TextBox.Text, out fileDuration))
 			{
-				string errorMessage = "Error: The duration textbox did not contain a valid integer value.";
+				string errorMessage = "Error: The duration textbox must contain a numeric integer value.";
 				Debug.WriteLine("ZZZ: " + errorMessage);
 				MessageBox.Show(errorMessage, "Error saving file", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
 				return;
 			}
 			SaveFileDialog dlg = new SaveFileDialog();
+			Debug.WriteLine("ZZZ: Initial Directory: " + dlg.InitialDirectory);
 			if (dlg.ShowDialog() == true)
 			{
+				// todo: propogate file extension into WriteAudioFile function
 				string extension = "." + audioFileType.ToString().ToLower();
 				Debug.WriteLine("ZZZ: Filename: " + dlg.FileName + extension + "   File Duration: " + Duration_TextBox.Text);
-				bool success = AudioCapturePlugin.WriteAudioFile(dlg.FileName, fileDurationSeconds);
+				int durationInSeconds = fileDuration;
+				if (TimeUnits_ComboBox.Text == "Seconds")
+				{
+					durationInSeconds = fileDuration;
+				}
+				else if (TimeUnits_ComboBox.Text == "Minutes")
+				{
+					durationInSeconds = fileDuration * 60;
+				}
+				bool success = AudioCapturePlugin.WriteAudioFile(dlg.FileName, durationInSeconds);
 				
 				string popupCaption = "Success";
 				string popupMessage = "Successfully wrote file: " + dlg.FileName + extension;
