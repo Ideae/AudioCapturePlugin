@@ -17,7 +17,7 @@ namespace AudioCapturePlugin
 
 		public static double[] samplesBufferLeft = null;
 		public static double[] samplesBufferRight = null;
-		private int _bufferSizeInSeconds = 125;
+		private int _bufferSizeInSeconds = 11 * 60;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
 		private int _currentBufferIndex = 0;
 
@@ -92,8 +92,9 @@ namespace AudioCapturePlugin
 
 					// This saves the audio to the Big Buffer for writing to file later.
 					// todo: only saving left channel now, find out if interleaving is necessary for two channels
-					samplesBufferLeft[_currentBufferIndex++] = outLeftSamples[i];
-					samplesBufferRight[_currentBufferIndex++] = outRightSamples[i];
+					samplesBufferLeft[_currentBufferIndex] = outLeftSamples[i];
+					samplesBufferRight[_currentBufferIndex] = outRightSamples[i];
+					_currentBufferIndex++;
 					if (_currentBufferIndex >= samplesBufferLeft.Length)
 					{
 						_currentBufferIndex = 0;
