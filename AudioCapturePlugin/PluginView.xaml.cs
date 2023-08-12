@@ -43,8 +43,13 @@ namespace AudioCapturePlugin
 				MessageBox.Show(errorMessage, "Error saving file", MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK, MessageBoxOptions.None);
 				return;
 			}
+			//string dateStr = DateTime.Now.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss");
+			string dateStr = DateTime.Now.ToString("yyyy'-'MM'-'dd'__'HH'-'mm'-'ss");
+			string defaultFileName = "AudioCapture__" + dateStr;
 			SaveFileDialog dlg = new SaveFileDialog();
-			Debug.WriteLine("ZZZ: Initial Directory: " + dlg.InitialDirectory);
+			dlg.FileName = defaultFileName;
+			Debug.WriteLine("ZZZ: Initial FileName: " + dlg.FileName);
+			//Debug.WriteLine("ZZZ: Datestring: " + dateStr);
 			if (dlg.ShowDialog() == true)
 			{
 				AudioFileTypes fileType = AudioFileTypes.MP3;

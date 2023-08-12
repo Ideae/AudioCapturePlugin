@@ -43,8 +43,8 @@ namespace AudioCapturePlugin
 			PluginID = 0xDC2D469D4B28EE40;
 
 			HasUserInterface = true;
-			EditorWidth = 200;
-			EditorHeight = 100;
+			EditorWidth = 300;
+			EditorHeight = 200;
 
 			// int sampRate = (int)Host.SampleRate; //todo: find out why host isn't initialized here or how to get around this (and why isn't Initialize being called before Process?)
 			int sampRate = 44100; //todo: this should be based on the Host

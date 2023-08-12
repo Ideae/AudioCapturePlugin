@@ -5,24 +5,41 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AudioCapturePlugin"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="200" d:DesignWidth="300">
   <Grid>
     <DockPanel LastChildFill="False" Background="#FFABABAB">
-      <StackPanel>
-        <TextBox Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="100" Height="21" />
-        <ComboBox x:Name="TimeUnits_ComboBox" Width="100" SelectedIndex="0">
-          <ComboBoxItem Content="Minutes"/>
-          <ComboBoxItem Content="Seconds"/>
-        </ComboBox>
-        <Button Content="Save File" Click="SaveFile_Button_Click"/>
-        <ComboBox x:Name="FileType_ComboBox" Width="100" SelectedIndex="0">
-          <ComboBoxItem Content="MP3"/>
-          <ComboBoxItem Content="WAV"/>
-        </ComboBox>
-      </StackPanel>
-
-
-
+      <Border Padding="10">
+        <StackPanel>
+          <Label FontWeight="Bold" Margin="0,0,0,10">Audio Capture Plugin</Label>
+          <Grid Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0">File Duration:</Label>
+            <TextBox Grid.Column="1" Margin="10 0 5 0" Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="50" Height="21" />
+            <ComboBox Grid.Column="2" x:Name="TimeUnits_ComboBox" Width="80" SelectedIndex="0">
+              <ComboBoxItem Content="Minutes"/>
+              <ComboBoxItem Content="Seconds"/>
+            </ComboBox>
+          </Grid>
+          <Grid Margin="0 0 0 10">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0">File Type:</Label>
+            <ComboBox Grid.Column="1" HorizontalAlignment="Right" x:Name="FileType_ComboBox" Width="135" SelectedIndex="0">
+              <ComboBoxItem Content="MP3"/>
+              <ComboBoxItem Content="WAV"/>
+            </ComboBox>
+          </Grid>
+          
+          <Button Content="Save File" Click="SaveFile_Button_Click"/>
+          
+        </StackPanel>
+      </Border>
     </DockPanel>
 
 
