@@ -28,7 +28,8 @@ namespace AudioCapturePlugin
 	/// </summary>
 	public partial class PluginView : UserControl
 	{
-		AudioFileTypes audioFileType = AudioFileTypes.WAV;
+		//AudioFileTypes audioFileType = AudioFileTypes.WAV;
+		AudioFileTypes audioFileType = AudioFileTypes.MP3;
 		public PluginView()
 		{
 			InitializeComponent();

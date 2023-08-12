@@ -56,24 +56,48 @@ public static class EncodeMP3
 	//added
 	public static void WriteMP3(string path, byte[] wavFile, int bitDepth) //bitRate)
 	{
-		Debug.WriteLine("Attempting to encode mp3 file: " + path);
+		string fullPath = path + ".mp3";
+		Debug.WriteLine("Attempting to encode mp3 file: " + fullPath);
+		Debug.WriteLine("Debug log test 1...");
+		/*TestCall();
+		Debug.WriteLine("Debug log test 2...");
+		var bytesTest = ConvertWavToMp3TEST(wavFile, bitDepth);
+		Debug.WriteLine("Debug log test 3...");*/
 		var bytesMP3 = ConvertWavToMp3(wavFile, bitDepth);
 		Debug.WriteLine("Attempting to write all file bytes...");
-		File.WriteAllBytes(path, bytesMP3);
-		Debug.WriteLine("Finished saving to MP3 file at: " + path + ".");
+		File.WriteAllBytes(fullPath, bytesMP3);
+		Debug.WriteLine("Finished saving to MP3 file at: " + fullPath + ".");
 	}
 
-	private static byte[] ConvertWavToMp3 (byte[] wavFile, int bitDepth) //bitRate)
+	/*public static void TestCall()
 	{
+		Debug.WriteLine("ZZZ: Debug log test...");
+	}
+	public static byte[] ConvertWavToMp3TEST(byte[] wavFile, int bitDepth) //bitRate)
+	{
+		Debug.WriteLine("ZZZ: ConvertWavToMp3TEST...");
+		return new byte[] { };
+	}*/
+
+	public static byte[] ConvertWavToMp3 (byte[] wavFile, int bitDepth) //bitRate)
+	{
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 1");
 		var retMs = new MemoryStream ();
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 2");
 		var ms = new MemoryStream (wavFile);
-		var rdr = new RawSourceWaveStream (ms, new WaveFormat (48000, bitDepth, 2));
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 3");
+		//var waveFormat = new WaveFormat(48000, bitDepth, 2);
+		var waveFormat = new WaveFormat(44100, bitDepth, 2);
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 4");
+		var rdr = new RawSourceWaveStream (ms, waveFormat);
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 5");
 		var wtr = new LameMP3FileWriter (retMs, rdr.WaveFormat, bitDepth);
-		
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 6");
 		rdr.CopyTo (wtr);
-
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 7");
 		wtr.Flush();
-
+		Debug.WriteLine("ZZZ: ConvertWavToMp3 8");
 		return retMs.ToArray ();
+		//return new byte[] { };
 	}
 }

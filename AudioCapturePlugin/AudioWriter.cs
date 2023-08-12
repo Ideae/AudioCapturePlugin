@@ -26,6 +26,7 @@ namespace AudioCapturePlugin
 			}
 
 			int BITS_PER_SAMPLE = 16;
+			//todo: this might be expecting the samples to be at a sample rate of 48000 (or, is it simply encoding the mp3 file at that sample rate?)
 			EncodeMP3.WriteMP3(filename, outputStream.ToArray(), BITS_PER_SAMPLE);
 		}
 

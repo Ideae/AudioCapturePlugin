@@ -148,8 +148,8 @@ namespace AudioCapturePlugin
 				return false;
 			}
 			
-			AudioWriter.WriteWAV(path, samples, sampleRate, channels);
-			//AudioWriter.WriteMP3(path, samples); //todo: get this working
+			//AudioWriter.WriteWAV(path, samples, sampleRate, channels);
+			AudioWriter.WriteMP3(path, samples); //todo: get this working
 			return true;
 		}
 		public static int nfmod(int a, int b)
