@@ -28,8 +28,6 @@ namespace AudioCapturePlugin
 	/// </summary>
 	public partial class PluginView : UserControl
 	{
-		//AudioFileTypes audioFileType = AudioFileTypes.WAV;
-		AudioFileTypes audioFileType = AudioFileTypes.MP3;
 		public PluginView()
 		{
 			InitializeComponent();
@@ -49,9 +47,16 @@ namespace AudioCapturePlugin
 			Debug.WriteLine("ZZZ: Initial Directory: " + dlg.InitialDirectory);
 			if (dlg.ShowDialog() == true)
 			{
-				// todo: propogate file extension into WriteAudioFile function
-				string extension = "." + audioFileType.ToString().ToLower();
-				Debug.WriteLine("ZZZ: Filename: " + dlg.FileName + extension + "   File Duration: " + Duration_TextBox.Text);
+				AudioFileTypes fileType = AudioFileTypes.MP3;
+				if (FileType_ComboBox.Text == "MP3")
+				{
+					fileType = AudioFileTypes.MP3;
+				}
+				else if (FileType_ComboBox.Text == "WAV")
+				{
+					fileType = AudioFileTypes.WAV;
+				}
+				
 				int durationInSeconds = fileDuration;
 				if (TimeUnits_ComboBox.Text == "Seconds")
 				{
@@ -61,8 +66,9 @@ namespace AudioCapturePlugin
 				{
 					durationInSeconds = fileDuration * 60;
 				}
-				bool success = AudioCapturePlugin.WriteAudioFile(dlg.FileName, durationInSeconds);
-				
+				bool success = AudioCapturePlugin.WriteAudioFile(dlg.FileName, durationInSeconds, fileType);
+
+				string extension = "." + fileType.ToString().ToLower();
 				string popupCaption = "Success";
 				string popupMessage = "Successfully wrote file: " + dlg.FileName + extension;
 				var popupImage = MessageBoxImage.None;
@@ -71,7 +77,6 @@ namespace AudioCapturePlugin
 					popupCaption = "Error: Failed to write audio file.";
 					popupMessage = "Error writing file.";
 					popupImage = MessageBoxImage.Error;
-
 				}
 				MessageBox.Show(popupMessage, popupCaption, MessageBoxButton.OK, popupImage, MessageBoxResult.OK, MessageBoxOptions.None);
 			}

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Lame;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,7 @@ namespace AudioCapturePlugin
 {
 	public static class AudioWriter
 	{
+		public const int bitRate = 128; // bit rate used to encode mp3 (this will affect file size and encoded audio quality, see NAudio.Lame.LAMEPreset)
 		// todo: assuming for now the bitsPerSample is 16, so we will write a short to the stream writer
 		public static void WriteMP3(string filename, double[] samples) //, int bitsPerSample)
 		{
@@ -24,10 +26,8 @@ namespace AudioCapturePlugin
 				// write the short to the stream
 				outputWriter.Write((short)(samples[i] * (double)Int16.MaxValue));
 			}
-
-			int BITS_PER_SAMPLE = 16;
-			//todo: this might be expecting the samples to be at a sample rate of 48000 (or, is it simply encoding the mp3 file at that sample rate?)
-			EncodeMP3.WriteMP3(filename, outputStream.ToArray(), BITS_PER_SAMPLE);
+			//int BITS_PER_SAMPLE = 16;
+			EncodeMP3.WriteMP3(filename, outputStream.ToArray(), bitRate);
 		}
 
 		public static void WriteWAV(string filename, double[] samples, int sampleRate, int channels) //, int bitsPerSample)
@@ -43,10 +43,10 @@ namespace AudioCapturePlugin
 			}
 			//int BITS_PER_SAMPLE = 16;
 
-			string fullPath = filename + ".wav";
+			//string fullPath = filename + ".wav";
 			//Debug.WriteLine("Attempting to write wav file: " + fullPath);
 
-			FileStream fs = File.OpenWrite(fullPath);
+			FileStream fs = File.OpenWrite(filename);
 
 			int HEADER_SIZE = 44;
 			short BITS_PER_SAMPLE = 16;
@@ -55,7 +55,7 @@ namespace AudioCapturePlugin
 			outputStream.WriteTo(fs);
 			fs.Close();
 
-			Debug.WriteLine("Successfully wrote wav file: " + fullPath);
+			Debug.WriteLine("Successfully wrote wav file: " + filename);
 		}
 
 		/// This generates a simple header for a canonical wave file, 

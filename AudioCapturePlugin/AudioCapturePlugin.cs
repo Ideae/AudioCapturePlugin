@@ -104,7 +104,7 @@ namespace AudioCapturePlugin
 			}
 			while (nextSample < inSamplesLeft.Length); // Continue looping until we hit the end of the buffer
 		}
-		public static bool WriteAudioFile(string path, int durationInSeconds)
+		public static bool WriteAudioFile(string path, int durationInSeconds, AudioFileTypes fileType)
 		{
 			int durationSecs = durationInSeconds;
 			if (durationSecs > Instance.bufferSizeInSeconds)
@@ -113,8 +113,6 @@ namespace AudioCapturePlugin
 				durationSecs = Instance.bufferSizeInSeconds;
 			}
 			int totalSamples = sampleRate * durationSecs;
-			
-
 			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBufferLeft.Length);
 
 			int samplesBufferLength = samplesBufferLeft.Length;
@@ -147,9 +145,19 @@ namespace AudioCapturePlugin
 				Debug.WriteLine("Error: Channel counts other than 1 or 2 are unsupported, but channels = " + channels);
 				return false;
 			}
-			
-			//AudioWriter.WriteWAV(path, samples, sampleRate, channels);
-			AudioWriter.WriteMP3(path, samples); //todo: get this working
+			string extension = "." + fileType.ToString().ToLower();
+			string fullPath = path + extension;
+			Debug.WriteLine("Attempting to write file: " + fullPath + "   File Duration: " + durationInSeconds + " seconds");
+			if (fileType == AudioFileTypes.WAV)
+			{
+				AudioWriter.WriteWAV(fullPath, samples, sampleRate, channels);
+				Debug.WriteLine("Finished saving to WAV file at: " + path + ".");
+			}
+			else if (fileType == AudioFileTypes.MP3)
+			{
+				AudioWriter.WriteMP3(fullPath, samples);
+				Debug.WriteLine("Finished saving to MP3 file at: " + path + ".");
+			}
 			return true;
 		}
 		public static int nfmod(int a, int b)

@@ -54,49 +54,30 @@ public static class EncodeMP3
 	}
 
 	//added
-	public static void WriteMP3(string path, byte[] wavFile, int bitDepth) //bitRate)
+	public static void WriteMP3(string path, byte[] wavFile, int bitRate)
 	{
-		string fullPath = path + ".mp3";
-		Debug.WriteLine("Attempting to encode mp3 file: " + fullPath);
-		Debug.WriteLine("Debug log test 1...");
-		/*TestCall();
-		Debug.WriteLine("Debug log test 2...");
-		var bytesTest = ConvertWavToMp3TEST(wavFile, bitDepth);
-		Debug.WriteLine("Debug log test 3...");*/
-		var bytesMP3 = ConvertWavToMp3(wavFile, bitDepth);
-		Debug.WriteLine("Attempting to write all file bytes...");
-		File.WriteAllBytes(fullPath, bytesMP3);
-		Debug.WriteLine("Finished saving to MP3 file at: " + fullPath + ".");
+		Debug.WriteLine("Attempting to encode mp3 file: " + path);
+		var bytesMP3 = ConvertWavToMp3(wavFile, bitRate);
+		//Debug.WriteLine("Attempting to write all file bytes...");
+		File.WriteAllBytes(path, bytesMP3);
+		//Debug.WriteLine("Finished saving to MP3 file at: " + path + ".");
 	}
 
-	/*public static void TestCall()
+	public static byte[] ConvertWavToMp3 (byte[] wavFile, int bitRate)
 	{
-		Debug.WriteLine("ZZZ: Debug log test...");
-	}
-	public static byte[] ConvertWavToMp3TEST(byte[] wavFile, int bitDepth) //bitRate)
-	{
-		Debug.WriteLine("ZZZ: ConvertWavToMp3TEST...");
-		return new byte[] { };
-	}*/
-
-	public static byte[] ConvertWavToMp3 (byte[] wavFile, int bitDepth) //bitRate)
-	{
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 1");
 		var retMs = new MemoryStream ();
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 2");
 		var ms = new MemoryStream (wavFile);
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 3");
-		//var waveFormat = new WaveFormat(48000, bitDepth, 2);
+		int bitDepth = 16;
 		var waveFormat = new WaveFormat(44100, bitDepth, 2);
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 4");
 		var rdr = new RawSourceWaveStream (ms, waveFormat);
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 5");
-		var wtr = new LameMP3FileWriter (retMs, rdr.WaveFormat, bitDepth);
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 6");
+		//int bitRate = 128;
+		var wtr = new LameMP3FileWriter (retMs, rdr.WaveFormat, bitRate);
+		//var w = new LameMP3FileWriter()
+		//LAMEPreset p = LAMEPreset.ABR_128;
+		//var lc = new LameConfig();
+		//wtr.PrintLAMEConfig();
 		rdr.CopyTo (wtr);
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 7");
 		wtr.Flush();
-		Debug.WriteLine("ZZZ: ConvertWavToMp3 8");
 		return retMs.ToArray ();
 		//return new byte[] { };
 	}
