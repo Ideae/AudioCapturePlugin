@@ -28,8 +28,10 @@ namespace AudioCapturePlugin
 	/// </summary>
 	public partial class PluginView : UserControl
 	{
-		public PluginView()
+		AudioCapturePlugin audioCapturePlugin;
+		public PluginView(AudioCapturePlugin audioCapturePlugin)
 		{
+			this.audioCapturePlugin = audioCapturePlugin;
 			InitializeComponent();
 		}
 
@@ -71,7 +73,7 @@ namespace AudioCapturePlugin
 				{
 					durationInSeconds = fileDuration * 60;
 				}
-				bool success = AudioCapturePlugin.WriteAudioFile(dlg.FileName, durationInSeconds, fileType);
+				bool success = audioCapturePlugin.WriteAudioFile(dlg.FileName, durationInSeconds, fileType);
 
 				string extension = "." + fileType.ToString().ToLower();
 				string popupCaption = "Success";

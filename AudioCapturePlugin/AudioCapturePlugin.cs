@@ -9,29 +9,20 @@ namespace AudioCapturePlugin
 {
 	public class AudioCapturePlugin : AudioPluginWPF
 	{
-		private static AudioCapturePlugin _instance = null;
-		public static AudioCapturePlugin Instance { get { return _instance; } }
-
 		AudioIOPort stereoInput;
 		AudioIOPort stereoOutput;
 
-		public static double[] samplesBufferLeft = null;
-		public static double[] samplesBufferRight = null;
+		public double[] samplesBufferLeft = null;
+		public double[] samplesBufferRight = null;
 		private int _bufferSizeInSeconds = 11 * 60;
 		public int bufferSizeInSeconds { get { return _bufferSizeInSeconds; } }
 		private int _currentBufferIndex = 0;
 
-		public static int sampleRate { get { return (int)Instance.Host.SampleRate; } }
+		public int sampleRate { get { return (int)Host.SampleRate; } }
 		private const int channels = 2;
 
 		public AudioCapturePlugin()
 		{
-			if (_instance != null)
-			{
-				Debug.WriteLine("Warning: AudioCapturePlugin _instance already had a value and the singleton is being overwritten. (Multiple instances of AudioCapturePlugin were created)");
-			}
-			_instance = this;
-
 			Company = "My Company";
 			Website = "www.mywebsite.com";
 			Contact = "contact@my.email";
@@ -55,7 +46,7 @@ namespace AudioCapturePlugin
 
 		public override UserControl GetEditorView()
 		{
-			return new PluginView(); // (this);
+			return new PluginView(this);
 		}
 
 		public override void Initialize()
@@ -104,16 +95,16 @@ namespace AudioCapturePlugin
 			}
 			while (nextSample < inSamplesLeft.Length); // Continue looping until we hit the end of the buffer
 		}
-		public static bool WriteAudioFile(string path, int durationInSeconds, AudioFileTypes fileType)
+		public bool WriteAudioFile(string path, int durationInSeconds, AudioFileTypes fileType)
 		{
 			int durationSecs = durationInSeconds;
-			if (durationSecs > Instance.bufferSizeInSeconds)
+			if (durationSecs > bufferSizeInSeconds)
 			{
-				Debug.WriteLine("Warning: The maximum file length is " + Instance.bufferSizeInSeconds + ". Writing that length instead.");
-				durationSecs = Instance.bufferSizeInSeconds;
+				Debug.WriteLine("Warning: The maximum file length is " + bufferSizeInSeconds + ". Writing that length instead.");
+				durationSecs = bufferSizeInSeconds;
 			}
 			int totalSamples = sampleRate * durationSecs;
-			int firstSampleIndexInBuffer = nfmod((Instance._currentBufferIndex - totalSamples), samplesBufferLeft.Length);
+			int firstSampleIndexInBuffer = nfmod((_currentBufferIndex - totalSamples), samplesBufferLeft.Length);
 
 			int samplesBufferLength = samplesBufferLeft.Length;
 			double[] samples = null;
