@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AudioCapturePlugin"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="300">
+             d:DesignHeight="160" d:DesignWidth="300">
   <Grid>
     <DockPanel LastChildFill="False" Background="#FFABABAB">
       <Border Padding="10" Width="295">
@@ -20,7 +20,7 @@
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">File Duration:</Label>
-            <TextBox Grid.Column="1" Margin="0 0 10 0" Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="50" Height="21" />
+            <TextBox Grid.Column="1" Margin="0 0 10 0" Name="Duration_TextBox" TextWrapping="Wrap" Text="1" Width="50" Height="21" />
             <Button Grid.Column="2" Margin="0 0 0 0" Content="&lt;" Width="20" Click="DecrementLeft_Button_Click"/>
             <Button Grid.Column="3" Margin="0 0 0 0" Content="&gt;" Width="20" Click="IncrementRight_Button_Click"/>
             <ComboBox Grid.Column="4" Margin="10 0 0 0" x:Name="TimeUnits_ComboBox" SelectedIndex="0">
