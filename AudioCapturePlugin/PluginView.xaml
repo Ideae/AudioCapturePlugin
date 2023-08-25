@@ -8,18 +8,22 @@
              d:DesignHeight="200" d:DesignWidth="300">
   <Grid>
     <DockPanel LastChildFill="False" Background="#FFABABAB">
-      <Border Padding="10">
+      <Border Padding="10" Width="295">
         <StackPanel>
           <Label FontWeight="Bold" Margin="0,0,0,10">Audio Capture Plugin</Label>
           <Grid Margin="0 0 0 10">
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="Auto"/>
+              <ColumnDefinition Width="20"/>
+              <ColumnDefinition Width="20"/>
               <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0">File Duration:</Label>
-            <TextBox Grid.Column="1" Margin="10 0 5 0" Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="50" Height="21" />
-            <ComboBox Grid.Column="2" x:Name="TimeUnits_ComboBox" Width="80" SelectedIndex="0">
+            <TextBox Grid.Column="1" Margin="0 0 10 0" Name="Duration_TextBox" TextWrapping="Wrap" Text="" Width="50" Height="21" />
+            <Button Grid.Column="2" Margin="0 0 0 0" Content="&lt;" Width="20" Click="DecrementLeft_Button_Click"/>
+            <Button Grid.Column="3" Margin="0 0 0 0" Content="&gt;" Width="20" Click="IncrementRight_Button_Click"/>
+            <ComboBox Grid.Column="4" Margin="10 0 0 0" x:Name="TimeUnits_ComboBox" SelectedIndex="0">
               <ComboBoxItem Content="Minutes"/>
               <ComboBoxItem Content="Seconds"/>
             </ComboBox>

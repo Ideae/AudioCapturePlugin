@@ -88,5 +88,33 @@ namespace AudioCapturePlugin
 				MessageBox.Show(popupMessage, popupCaption, MessageBoxButton.OK, popupImage, MessageBoxResult.OK, MessageBoxOptions.None);
 			}
 		}
+
+		private void DecrementLeft_Button_Click(object sender, RoutedEventArgs e)
+		{
+			int fileDuration = 1;
+			if (!int.TryParse(Duration_TextBox.Text, out fileDuration))
+			{
+				fileDuration = 1;
+			}
+			else
+			{
+				fileDuration = Math.Max(1, fileDuration - 1);
+			}
+			Duration_TextBox.Text = fileDuration.ToString();
+		}
+
+		private void IncrementRight_Button_Click(object sender, RoutedEventArgs e)
+		{
+			int fileDuration = 1;
+			if (!int.TryParse(Duration_TextBox.Text, out fileDuration))
+			{
+				fileDuration = 1;
+			}
+			else
+			{
+				fileDuration++;
+			}
+			Duration_TextBox.Text = fileDuration.ToString();
+		}
     }
 }
